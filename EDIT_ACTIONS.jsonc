@@ -1,0 +1,92 @@
+// Edit actions for use with Chicken
+// (https: //github.com/chickensoft-games/Chicken)
+//
+// Edit actions tell Chicken how to customize a freshly cloned repository.
+{
+  "inputs": [
+    {
+      "name": "title",
+      "type": "string",
+      "default": "My Game"
+    }
+  ],
+  "actions": [
+    // Edit game's .csproj file
+    {
+      // Find and replace text inside a file
+      "type": "edit",
+      "file": "Jam2023.csproj",
+      "find": "Jam2023",
+      "replace": "{title:PascalCase}"
+    },
+    {
+      // Rename file.
+      "type": "rename",
+      "file": "Jam2023.csproj",
+      "to": "{title:PascalCase}.csproj"
+    },
+    // Edit game's visual studio solution file
+    {
+      // Replace each instance of the guid below with a new guid
+      "type": "guid",
+      "file": "Jam2023.sln",
+      "replace": "00000000-0000-0000-0000-000000000000"
+    },
+    {
+      "type": "guid",
+      "file": "Jam2023.sln",
+      "replace": "00000000-0000-0000-0000-000000000001"
+    },
+    {
+      "type": "edit",
+      "file": "Jam2023.sln",
+      "find": "Jam2023",
+      "replace": "{title:PascalCase}"
+    },
+    {
+      "type": "rename",
+      "file": "Jam2023.sln",
+      "to": "{title:PascalCase}.sln"
+    },
+    // Edit game's project.godot file
+    {
+      "type": "edit",
+      "file": "project.godot",
+      "find": "Jam2023",
+      "replace": "{title}"
+    },
+    {
+      "type": "edit",
+      "file": "project.godot",
+      "find": "MyAssembly",
+      "replace": "{title:PascalCase}"
+    },
+    // Edit README.md
+    {
+      "type": "edit",
+      "file": "README.md",
+      "find": "Jam2023.csproj",
+      "replace": "{title:PascalCase}.csproj"
+    },
+    {
+      "type": "edit",
+      "file": "README.md",
+      "find": "Jam2023",
+      "replace": "{title}"
+    },
+    // Edit test/ExampleTest.cs
+    {
+      "type": "edit",
+      "file": "test/ExampleTest.cs",
+      "find": "Jam2023",
+      "replace": "{title:PascalCase}"
+    },
+    // Edit Main.cs
+    {
+      "type": "edit",
+      "file": "Main.cs",
+      "find": "Jam2023",
+      "replace": "{title:PascalCase}"
+    }
+  ]
+}

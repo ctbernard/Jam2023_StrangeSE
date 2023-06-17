@@ -1,0 +1,7 @@
+[gd_scene format=2]
+
+[node name="BaseBlock" type="Node2D"]
+
+[node name="SurroundingEffects" type="Particles2D" parent="."]
+
+[node name="Block" type="AnimatedSprite" parent="."]
