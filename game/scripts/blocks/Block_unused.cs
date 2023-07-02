@@ -1,6 +1,6 @@
 using Godot;
 
-public class Block : StaticBody2D {
+public class Block_unused : StaticBody2D {
   // TODO: preload the character and any other elements (blocks?) in the scene
   // Base block scene cannot be inherited, but if I were to try it would be by abstracting necessary fields and
   // most blocks will be added to the game scene by code rather than added directly, so add
@@ -22,7 +22,7 @@ public class Block : StaticBody2D {
 
   //Constuctors
 
-  public Block(Vector2 originalPosition) => this.originalPosition = originalPosition;
+  public Block_unused(Vector2 originalPosition) => this.originalPosition = originalPosition;
 
   // Called when the node enters the scene tree for the first time.
   public override void _Ready() => character = GetNode<Character>("../Character");
