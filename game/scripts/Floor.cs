@@ -1,6 +1,16 @@
 using Godot;
 using System;
 using Godot.Collections;
+using Array = System.Array;
+
+public struct tilePoolEntry {
+  public SourceBlock tile;
+  public Vector2 coor;
+  public int tileSetTile;
+
+  public override string ToString() =>
+    "Coordinates: " + coor + " Tile type: " + tileSetTile; // + " Tile type name: " + tile;
+}
 
 public class Floor : TileMap {
   // Declare member variables here. Examples:
@@ -11,10 +21,25 @@ public class Floor : TileMap {
 
   // Called when the node enters the scene tree for the first time.
   public override void _Ready() {
-    activationLocations.Add(new Vector2(0, 0));
     foreach (Vector2 location in activationLocations) {
       placeActivationTile(location);
     }
+
+    tilePoolEntry[] fullTiles = getFullMapTiles();
+
+    foreach (tilePoolEntry entry in fullTiles) {
+      // GD.PrintRaw(entry);
+      if (entry.tile != null) {
+        entry.tile.spread();
+      }
+    }
+
+    // GD.Print(fullTiles[0].coor + ", " + fullTiles[0].tileSetTile);
+
+    // spread();
+
+    poop(2);
+    GD.Print("tileset fire source: " + TileSet.FindTileByName("fire_source"));
   }
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -37,16 +62,15 @@ public class Floor : TileMap {
 #if DEBUG
 
 #endif
-
   }
 
   private void activationAvailable() {
-  //   if () {
-  //
-  //   }
+    //   if () {
+    //
+    //   }
   }
 
-  public bool spriteOnTile(Sprite sprite, Vector2 vec) {
+  public bool spriteOnTile(Node2D sprite, Vector2 vec) {
     /*
      *
      */
@@ -59,7 +83,210 @@ public class Floor : TileMap {
     return false;
   }
 
+  // public Array<tilePoolEntry> getFullMapTiles() {
+  public tilePoolEntry[] getFullMapTiles() {
+    //Pulls all map tiles for a single room to help recreate rooms
+    Array<Vector2> usedCells = new Array<Vector2>(GetUsedCells());
+    tilePoolEntry[] roomTilePool = new tilePoolEntry[usedCells.Count];
+
+    // object[] array = new object[usedCells.Count];
+    for (int i = 0; i < usedCells.Count; i++) {
+      tilePoolEntry entry = new tilePoolEntry();
+      entry.coor = usedCells[i];
+      entry.tileSetTile = GetCellv(usedCells[i]);
+      switch (TileSet.TileGetName(entry.tileSetTile)) {
+        case "fire_source":
+          entry.tile = new FireBlock(this, entry.coor);
+          GD.Print("Fire block at " + entry.coor + " successfully attached to tile pool");
+          break;
+        case "water_source":
+          entry.tile = new WaterBlock(this, entry.coor, true);
+          GD.Print("Water block at " + entry.coor + " successfully attached to tile pool");
+          break;
+        default:
+          GD.PrintRaw("Block at " + entry.coor + " was not properly attached to tile pool: ");
+          GD.Print(TileSet.TileGetName(entry.tileSetTile));
+          break;
+      }
+
+      roomTilePool[i] = entry;
+    }
+
+    return roomTilePool;
+  }
+
+  public void getFullMapBlocks() {
+    //Pulls all map blocks for a single room to help recreate rooms
+  }
+
+  /**** Tile Management and Functionality ****/
+
+  public void poop(int id) {
+    Godot.Collections.Array tilesArray = GetUsedCellsById(id);
+    foreach (Vector2 tile in tilesArray) {
+      // tile.
+      // GD.Print("Another tile: " + tile);
+    }
+  }
 }
+
+public abstract class Tile {
+  protected TileMap tileMap;
+  protected TileSet tileSet;
+  protected Vector2 cell;
+
+  protected Tile(TileMap tileMap, Vector2 cell) {
+    this.tileMap = tileMap;
+    this.cell = cell;
+    tileSet = tileMap.TileSet;
+  }
+  // this.Array
+  // public Vector2 toRight() {
+  //
+  // }
+
+  public void lineSetTiles(Vector2 start, Vector2 end) {
+    Vector2 diff = end - start;
+  }
+
+  // public void areaSetTiles() {
+  //
+  // }
+}
+
+public class SourceBlock : Tile {
+  // protected virtual Vector2[] changeMatrix;
+
+  //TODO
+  public SourceBlock(TileMap tileMap, Vector2 cell) : base(tileMap, cell) {
+  }
+  // public String checkTile() {
+    //Block - Block interactions
+    // return tileMap.TileSet.TileGetName(tileMap.GetCellv(cell));
+    // if () {
+    //   switch (tile) {
+    //     case "fire_spread":
+    //       GD.Print("You are burning!!");
+    //       break;
+    //   }
+    // }
+  // }
+  public bool[] checkSpreadObstruct(Vector2[] spreadVectors) {
+     bool[] spreadCheck = new bool[spreadVectors.Length];
+    string[] obstructions = { "wall", "box", "fire_source", "water_source" };
+    for (int i = 0; i < spreadCheck.Length; i++) {
+      foreach (string obstruct in obstructions) {
+        spreadCheck[i] = tileMap.TileSet.FindTileByName(obstruct) == tileMap.GetCellv(spreadVectors[i] + cell);
+        GD.Print("Spread check for "  + i + " is false. Tile type: " + tileMap.GetCellv(spreadVectors[i]));
+
+        if (spreadCheck[i]) {
+          GD.Print("Spread check for "  + i + " is true. Tile type: " + tileMap.GetCellv(spreadVectors[i]));
+          break;
+        }
+
+      }
+    }
+
+    return spreadCheck;
+  }
+
+
+  public virtual void spread() {
+    // bool[] checkedObstructs = checkSpreadObstruct(changeMatrix);
+  }
+
+  //**Unused vectors
+  private Vector2[] cardinal = { Vector2.Up, Vector2.Down, Vector2.Left, Vector2.Right };
+
+  private bool checkTileFree(Vector2 target) {
+    if (tileMap.GetCellv(target) < 1) {
+      return true;
+    }
+
+    return false;
+  }
+
+  private bool[] checkCardinally(Vector2 target) {
+    bool[] cardinalChecks = new bool[4];
+    for (int i = 0; i < 4; i++) {
+      cardinalChecks[i] = checkTileFree(target + cardinal[i]);
+    }
+
+    return cardinalChecks;
+  }
+}
+
+public class WaterBlock : SourceBlock {
+  //Determining orientation of block (either left-right or up-down)
+  private bool horizontal;
+
+  public WaterBlock(TileMap tileMap, Vector2 cell, bool horizontal) : base(tileMap, cell) =>
+    this.horizontal = horizontal;
+
+  public override void spread() {
+    //Recursive spread implementation
+    Vector2 spreadingTile = cell;
+    Vector2[] changeMatrix = { Vector2.Up, Vector2.Down };
+    if (horizontal) {
+      //Spread left-right
+      changeMatrix[0] = Vector2.Left;
+      changeMatrix[1] = Vector2.Right;
+      tileMap.SetCellv((changeMatrix[0] + spreadingTile), tileSet.FindTileByName("water_left_spread"));
+      tileMap.SetCellv((changeMatrix[1] + spreadingTile), tileSet.FindTileByName("water_right_spread"));
+    }
+    else {
+      tileMap.SetCellv((changeMatrix[0] + spreadingTile), tileSet.FindTileByName("water_up_spread"));
+      tileMap.SetCellv((changeMatrix[1] + spreadingTile), tileSet.FindTileByName("water_down_spread"));
+    }
+
+
+    // foreach (Vector2 vec in changeMatrix) {
+    //   //TODO guard statements for blocking spread and interactions
+    //   tileMap.SetCellv((vec + spreadingTile), tileSet.FindTileByName("water_up_spread"));
+    //   //TODO check around (same orientation) new tiles and if no obstructions call spread for new tiles
+    // }
+  }
+}
+
+public class FireBlock : SourceBlock {
+  private int range = 2;
+  Vector2[] changeMatrix = {
+      Vector2.Up, Vector2.Down, Vector2.Left, Vector2.Right, Vector2.Up + Vector2.Left, Vector2.Up + Vector2.Right,
+      Vector2.Down + Vector2.Right, Vector2.Down + Vector2.Left, Vector2.Up * 2, Vector2.Down * 2, Vector2.Right * 2,
+      Vector2.Left * 2
+    };
+
+  public FireBlock(TileMap tileMap, Vector2 cell) : base(tileMap, cell)
+  {
+  }
+
+  public override void spread() {
+    //Diamond spread implementation
+    //TODO move outside of spread
+    Vector2[] spreadBlocks = new Vector2[12];
+    bool[] spreadObstruct = checkSpreadObstruct(changeMatrix);
+    foreach (bool b in spreadObstruct) {
+      GD.Print(b);
+    }
+    // foreach (Vector2 vec in changeMatrix) {
+    for (int i = 0; i < changeMatrix.Length; i++) {
+      if (!spreadObstruct[i]) {
+        // GD.Print("burning cell: " + (changeMatrix[i] + cell));
+        tileMap.SetCellv((changeMatrix[i] + cell), tileSet.FindTileByName("fire_spread"));
+
+      }
+
+    }
+    }
+
+
+  }
+
+// public void burnBlock() {
+//   // if (range)
+// }
+
+
 
 /********************************************************************************************************************/
 

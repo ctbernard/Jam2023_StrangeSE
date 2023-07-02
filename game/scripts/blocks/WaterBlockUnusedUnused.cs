@@ -1,6 +1,6 @@
 using Godot;
 
-public class WaterBlock : Block {
+public class WaterBlockUnusedUnused : Block_unused {
   // Declare member variables here. Examples:
   // private int a = 2;
   // private string b = "text";
@@ -15,7 +15,7 @@ public class WaterBlock : Block {
 //  {
 //
 //  }
-  public WaterBlock(Vector2 originalPosition) : base(originalPosition) {
+  public WaterBlockUnusedUnused(Vector2 originalPosition) : base(originalPosition) {
 
   }
 }

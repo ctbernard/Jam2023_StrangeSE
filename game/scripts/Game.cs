@@ -31,7 +31,7 @@ public class Game : Node2D {
   private Vector2 startTile;
   private Vector2 endTile = new Vector2(200, 200);
   private Vector2 charPosMapped;
-  private Sprite character;
+  private KinematicBody2D character;
   private Floor tiles;
   private Vector2 roomDimensions; // private var roomLength; private var roomHeight;
   // private Character user = new();
@@ -42,7 +42,7 @@ public class Game : Node2D {
 
   // Called when the node enters the scene tree for the first time.
   public override void _Ready() {
-    character = GetNode<Sprite>("Character");
+    character = GetNode<KinematicBody2D>("Character");
     // Character character = GetNode<Character>("Character.tscn"); //pull node as scene?
     tiles = GetNode<Floor>("Floor");
     charPosMapped = tiles.WorldToMap(character.Position);
@@ -56,26 +56,31 @@ public class Game : Node2D {
   }
 
   public override void _PhysicsProcess(float delta) {
+    int moveMultiplier = 1;
+    KinematicCollision2D collide;
+#if DEBUG
+    moveMultiplier = 3;
+#endif
     //Movement > Physics Checks >
     //simple temporary wasd controls, can we move this into character? - would have to make a KinematicBody
     if (Input.IsActionPressed("ui_right") || Input.IsPhysicalKeyPressed((int)KeyList.D)) {
       GD.Print("Character Position: " + character.Position);
-      character.MoveLocalX(.5f);
+      character.MoveAndCollide(Vector2.Right * moveMultiplier);
     }
 
     if (Input.IsActionPressed("ui_left") || Input.IsKeyPressed((int)KeyList.A)) {
       GD.Print("Character Position: " + character.Position);
-      character.MoveLocalX(-.5f);
+      character.MoveAndCollide(Vector2.Left * moveMultiplier);
     }
 
     if (Input.IsActionPressed("ui_up") || Input.IsKeyPressed((int)KeyList.W)) {
       GD.Print("Character Position: " + character.Position);
-      character.MoveLocalY(-.5f);
+      character.MoveAndCollide(Vector2.Up * moveMultiplier);
     }
 
     if (Input.IsActionPressed("ui_down") || Input.IsKeyPressed((int)KeyList.S)) {
       GD.Print("Character Position: " + character.Position);
-      character.MoveLocalY(.5f);
+      character.MoveAndCollide(Vector2.Down * moveMultiplier);
     }
 
     if (tiles.spriteOnTile(character, endTile)) {
