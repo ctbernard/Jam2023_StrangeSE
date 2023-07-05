@@ -25,6 +25,7 @@ namespace Jam2023 {
 #endif
       // await Task.CompletedTask;
       GetTree().ChangeScene("res://game/Game.tscn");
+      // GetTree().ChangeScene("res://test/Test Movement.tscn");
     }
   }
 }

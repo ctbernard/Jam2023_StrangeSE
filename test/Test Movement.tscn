@@ -45,6 +45,10 @@ extents = Vector2( 27, 27 )
 
 [node name="Root" type="Node2D"]
 script = ExtResource( 1 )
+<<<<<<< Updated upstream
+=======
+Mode = 2
+>>>>>>> Stashed changes
 PlayerNode = NodePath("Player")
 SelectorNode = NodePath("Area2D")
 ObjectNode = NodePath("Block")

@@ -7,6 +7,7 @@ public struct tilePoolEntry {
   public SourceBlock tile;
   public Vector2 coor;
   public int tileSetTile;
+  public int currentBlock;
 
   public override string ToString() =>
     "Coordinates: " + coor + " Tile type: " + tileSetTile; // + " Tile type name: " + tile;
@@ -16,17 +17,25 @@ public class Floor : TileMap {
   // Declare member variables here. Examples:
   // private int a = 2;
   // private string b = "text";
+  private Node2D game;
+
 
   private Array<Vector2> activationLocations = new Array<Vector2>();
 
+  // private ResourcePreloader resourcePreloader = new ResourcePreloader();
+
   // Called when the node enters the scene tree for the first time.
   public override void _Ready() {
+
+    game = GetNode<Node2D>(GetParent()._ImportPath);
+
     foreach (Vector2 location in activationLocations) {
       placeActivationTile(location);
     }
 
-    tilePoolEntry[] fullTiles = getFullMapTiles();
+    tilePoolEntry[] fullTiles = MapTilePool(true);
 
+    //testing outside of physics
     foreach (tilePoolEntry entry in fullTiles) {
       // GD.PrintRaw(entry);
       if (entry.tile != null) {
@@ -84,7 +93,8 @@ public class Floor : TileMap {
   }
 
   // public Array<tilePoolEntry> getFullMapTiles() {
-  public tilePoolEntry[] getFullMapTiles() {
+  public tilePoolEntry[] MapTilePool(bool startUp) {
+    //TODO change to checkTileEntry method and split loop into the class
     //Pulls all map tiles for a single room to help recreate rooms
     Array<Vector2> usedCells = new Array<Vector2>(GetUsedCells());
     tilePoolEntry[] roomTilePool = new tilePoolEntry[usedCells.Count];
@@ -94,19 +104,38 @@ public class Floor : TileMap {
       tilePoolEntry entry = new tilePoolEntry();
       entry.coor = usedCells[i];
       entry.tileSetTile = GetCellv(usedCells[i]);
-      switch (TileSet.TileGetName(entry.tileSetTile)) {
-        case "fire_source":
-          entry.tile = new FireBlock(this, entry.coor);
-          GD.Print("Fire block at " + entry.coor + " successfully attached to tile pool");
-          break;
-        case "water_source":
-          entry.tile = new WaterBlock(this, entry.coor, true);
-          GD.Print("Water block at " + entry.coor + " successfully attached to tile pool");
-          break;
-        default:
-          GD.PrintRaw("Block at " + entry.coor + " was not properly attached to tile pool: ");
-          GD.Print(TileSet.TileGetName(entry.tileSetTile));
-          break;
+      if (startUp) {
+        switch (TileSet.TileGetName(entry.tileSetTile)) {
+          case "norm_block":
+            entry.tile = new NormBlock(this, entry.coor);
+            createBlock(MapToWorld(entry.coor), 0);
+            GD.Print("Normal block at " + entry.coor + " successfully attached to tile pool");
+            break;
+          case "box_block":
+            entry.tile = new BoxBlock(this, entry.coor);
+            createBlock(MapToWorld(entry.coor), 1);
+            GD.Print("Box block at " + entry.coor + " successfully attached to tile pool");
+            break;
+          case "water_source":
+            entry.tile = new WaterBlock(this, entry.coor, true);
+            createBlock(MapToWorld(entry.coor), 2);
+            GD.Print("Water block at " + entry.coor + " successfully attached to tile pool");
+            break;
+          case "fire_source":
+            entry.tile = new FireBlock(this, entry.coor);
+            createBlock(MapToWorld(entry.coor), 3);
+            GD.Print("Fire block at " + entry.coor + " successfully attached to tile pool");
+            break;
+          case "growth_source":
+            entry.tile = new GrowthBlock(this, entry.coor);
+            createBlock(MapToWorld(entry.coor), 4);
+            GD.Print("Growth block at " + entry.coor + " successfully attached to tile pool");
+            break;
+          default:
+            // GD.PrintRaw("Block at " + entry.coor + " was not properly attached to tile pool: ");
+            // GD.Print(TileSet.TileGetName(entry.tileSetTile));
+            break;
+        }
       }
 
       roomTilePool[i] = entry;
@@ -115,6 +144,10 @@ public class Floor : TileMap {
     return roomTilePool;
   }
 
+  private void createBlock(Vector2 position, int blockID) {
+    GetParent().CallDeferred("createBlock", position, blockID);
+    SetCellv(WorldToMap( position ), TileSet.FindTileByName("floor"));
+  }
   public void getFullMapBlocks() {
     //Pulls all map blocks for a single room to help recreate rooms
   }
@@ -177,10 +210,10 @@ public class SourceBlock : Tile {
     for (int i = 0; i < spreadCheck.Length; i++) {
       foreach (string obstruct in obstructions) {
         spreadCheck[i] = tileMap.TileSet.FindTileByName(obstruct) == tileMap.GetCellv(spreadVectors[i] + cell);
-        GD.Print("Spread check for "  + i + " is false. Tile type: " + tileMap.GetCellv(spreadVectors[i]));
+        // GD.Print("Spread check for "  + i + " is false. Tile type: " + tileMap.GetCellv(spreadVectors[i]));
 
         if (spreadCheck[i]) {
-          GD.Print("Spread check for "  + i + " is true. Tile type: " + tileMap.GetCellv(spreadVectors[i]));
+          // GD.Print("Spread check for "  + i + " is true. Tile type: " + tileMap.GetCellv(spreadVectors[i]));
           break;
         }
 
@@ -215,6 +248,32 @@ public class SourceBlock : Tile {
     return cardinalChecks;
   }
 }
+
+public class NormBlock : SourceBlock {
+  public NormBlock(TileMap tileMap, Vector2 cell) : base(tileMap, cell)
+  {
+  }
+
+  public override void spread() {
+    // Vector2 spreadingTile = cell;
+    // Vector2[] changeMatrix;
+
+  }
+}
+
+public class BoxBlock : SourceBlock {
+  public BoxBlock(TileMap tileMap, Vector2 cell) : base(tileMap, cell)
+  {
+  }
+
+  public override void spread() {
+    // Vector2 spreadingTile = cell;
+    // Vector2[] changeMatrix;
+
+  }
+}
+
+
 
 public class WaterBlock : SourceBlock {
   //Determining orientation of block (either left-right or up-down)
@@ -266,7 +325,7 @@ public class FireBlock : SourceBlock {
     Vector2[] spreadBlocks = new Vector2[12];
     bool[] spreadObstruct = checkSpreadObstruct(changeMatrix);
     foreach (bool b in spreadObstruct) {
-      GD.Print(b);
+      // GD.Print(b);
     }
     // foreach (Vector2 vec in changeMatrix) {
     for (int i = 0; i < changeMatrix.Length; i++) {
@@ -278,9 +337,20 @@ public class FireBlock : SourceBlock {
 
     }
     }
-
-
   }
+
+public class GrowthBlock : SourceBlock {
+  public GrowthBlock(TileMap tileMap, Vector2 cell) : base(tileMap, cell)
+  {
+  }
+
+  public override void spread() {
+    //Recursive spread implementation
+    // Vector2 spreadingTile = cell;
+    // Vector2[] changeMatrix = { Vector2.Up, Vector2.Down };
+  }
+}
+
 
 // public void burnBlock() {
 //   // if (range)

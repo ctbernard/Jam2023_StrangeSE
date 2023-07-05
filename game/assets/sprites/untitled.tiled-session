@@ -6,12 +6,26 @@
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
-        "tiles/map_test.tmx": {
+        "C:/Users/Chris/Downloads/GameJam_2023/tiles/map_test.tmx": {
             "scale": 0.4077083333333333,
             "selectedLayer": 0,
             "viewCenter": {
                 "x": 480.7358201328564,
                 "y": 320.08175779253963
+            }
+        },
+        "C:/Users/Chris/Downloads/GameJam_2023/tiles/tileset.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/Chris/Downloads/GameJam_2023/tiles/tileset2.tsx": {
+            "scaleInDock": 1
+        },
+        "tiles/map_test.tmx": {
+            "scale": 0.4077083333333333,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 453.7557485947879,
+                "y": 298.00715380684716
             }
         },
         "tiles/tileset.tsx": {
