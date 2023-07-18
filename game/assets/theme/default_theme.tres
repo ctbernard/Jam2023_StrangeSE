@@ -1,0 +1,43 @@
+[gd_resource type="Theme" load_steps=11 format=2]
+
+[ext_resource path="res://game/assets/font/KarenFat.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://game/assets/font/AtariGames.ttf" type="DynamicFontData" id=2]
+
+[sub_resource type="DynamicFont" id=1]
+
+[sub_resource type="DynamicFont" id=2]
+size = 25
+font_data = ExtResource( 1 )
+
+[sub_resource type="StyleBoxFlat" id=3]
+bg_color = Color( 1, 1, 1, 0 )
+
+[sub_resource type="StyleBoxFlat" id=4]
+bg_color = Color( 1, 1, 1, 0 )
+
+[sub_resource type="StyleBoxFlat" id=5]
+bg_color = Color( 1, 1, 1, 0 )
+
+[sub_resource type="StyleBoxFlat" id=6]
+bg_color = Color( 1, 1, 1, 0 )
+
+[sub_resource type="StyleBoxFlat" id=7]
+bg_color = Color( 1, 1, 1, 0 )
+
+[sub_resource type="DynamicFont" id=8]
+size = 40
+font_data = ExtResource( 2 )
+
+[resource]
+/fonts/Atari = SubResource( 1 )
+Button/colors/font_color_disabled = Color( 0.501961, 0.501961, 0.501961, 1 )
+Button/colors/font_color_focus = Color( 1, 0.890196, 0, 1 )
+Button/colors/font_color_hover = Color( 1, 0.890196, 0, 1 )
+Button/colors/font_color_pressed = Color( 1, 0.890196, 0, 1 )
+Button/fonts/font = SubResource( 2 )
+Button/styles/disabled = SubResource( 3 )
+Button/styles/focus = SubResource( 4 )
+Button/styles/hover = SubResource( 5 )
+Button/styles/normal = SubResource( 6 )
+Button/styles/pressed = SubResource( 7 )
+Label/fonts/font = SubResource( 8 )

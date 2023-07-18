@@ -1,12 +1,11 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://game/scripts/GameManager.cs" type="Script" id=1]
 [ext_resource path="res://game/assets/sprites/icon.png" type="Texture" id=2]
 [ext_resource path="res://game/scripts/Floor.cs" type="Script" id=3]
 [ext_resource path="res://game/scripts/Selector.cs" type="Script" id=4]
-
-[sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 32, 32 )
+[ext_resource path="res://game/prefab/Player.tscn" type="PackedScene" id=5]
+[ext_resource path="res://game/prefab/Wood.tscn" type="PackedScene" id=6]
 
 [sub_resource type="TileSet" id=2]
 1/name = "icon.png 1"
@@ -41,24 +40,12 @@ extents = Vector2( 32, 32 )
 [sub_resource type="CircleShape2D" id=3]
 
 [sub_resource type="RectangleShape2D" id=4]
-extents = Vector2( 27, 27 )
+extents = Vector2( 26, 26 )
 
 [node name="Root" type="Node2D"]
 script = ExtResource( 1 )
-PlayerNode = NodePath("Player")
-SelectorNode = NodePath("Area2D")
-ObjectNode = NodePath("Block")
 
-[node name="Block" type="KinematicBody2D" parent="."]
-position = Vector2( 128, 128 )
-
-[node name="Sprite" type="Sprite" parent="Block"]
-position = Vector2( 33, 33 )
-texture = ExtResource( 2 )
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Block"]
-position = Vector2( 33, 33 )
-shape = SubResource( 1 )
+[node name="Block" parent="." instance=ExtResource( 6 )]
 
 [node name="Floor" type="TileMap" parent="."]
 visible = false
@@ -72,15 +59,7 @@ script = ExtResource( 3 )
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Floor/Area2D"]
 shape = SubResource( 3 )
 
-[node name="Player" type="KinematicBody2D" parent="."]
-
-[node name="Sprite" type="Sprite" parent="Player"]
-position = Vector2( 33, 33 )
-texture = ExtResource( 2 )
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
-position = Vector2( 33, 33 )
-shape = SubResource( 1 )
+[node name="Player" parent="." instance=ExtResource( 5 )]
 
 [node name="Area2D" type="Area2D" parent="."]
 position = Vector2( 0, 192 )
@@ -92,5 +71,5 @@ scale = Vector2( 0.5, 0.5 )
 texture = ExtResource( 2 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-position = Vector2( 33, 33 )
+position = Vector2( 34, 34 )
 shape = SubResource( 4 )

@@ -1,0 +1,103 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://game/scenes/Menu.cs" type="Script" id=1]
+[ext_resource path="res://game/scenes/SoundQueue.cs" type="Script" id=2]
+[ext_resource path="res://game/scenes/SoundManager.cs" type="Script" id=3]
+[ext_resource path="res://game/assets/music/Titlescreen.mp3" type="AudioStream" id=4]
+[ext_resource path="res://game/assets/theme/default_theme.tres" type="Theme" id=6]
+
+[node name="Main Menu" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+
+[node name="ColorRect" type="ColorRect" parent="."]
+margin_right = 1024.0
+margin_bottom = 600.0
+color = Color( 0, 0, 0, 1 )
+
+[node name="Menu" type="VBoxContainer" parent="."]
+margin_left = 34.0
+margin_top = 475.0
+margin_right = 200.0
+margin_bottom = 587.0
+grow_vertical = 0
+
+[node name="Start Button" type="Button" parent="Menu"]
+margin_right = 166.0
+margin_bottom = 26.0
+focus_neighbour_bottom = NodePath("../Option Button")
+theme = ExtResource( 6 )
+toggle_mode = true
+text = "Start Game"
+align = 0
+
+[node name="Option Button" type="Button" parent="Menu"]
+margin_top = 34.0
+margin_right = 166.0
+margin_bottom = 60.0
+focus_neighbour_top = NodePath("../Start Button")
+focus_neighbour_bottom = NodePath("../Exit Button")
+theme = ExtResource( 6 )
+text = "Option"
+align = 0
+
+[node name="Exit Button" type="Button" parent="Menu"]
+margin_top = 68.0
+margin_right = 166.0
+margin_bottom = 94.0
+focus_neighbour_top = NodePath("../Option Button")
+theme = ExtResource( 6 )
+text = "Exit"
+align = 0
+
+[node name="Option Menu" type="VBoxContainer" parent="."]
+visible = false
+margin_left = 27.0
+margin_top = 448.0
+margin_right = 125.0
+margin_bottom = 575.0
+
+[node name="Start Button" type="Button" parent="Option Menu"]
+margin_right = 98.0
+margin_bottom = 37.0
+theme = ExtResource( 6 )
+text = "Start"
+
+[node name="Option Button" type="Button" parent="Option Menu"]
+margin_top = 45.0
+margin_right = 98.0
+margin_bottom = 82.0
+theme = ExtResource( 6 )
+text = "Option"
+
+[node name="Exit Button" type="Button" parent="Option Menu"]
+margin_top = 90.0
+margin_right = 98.0
+margin_bottom = 127.0
+theme = ExtResource( 6 )
+text = "Exit"
+
+[node name="Sound Queue" type="Node" parent="."]
+script = ExtResource( 2 )
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Sound Queue"]
+stream = ExtResource( 4 )
+
+[node name="Sound Manager" type="Node" parent="."]
+script = ExtResource( 3 )
+
+[node name="Tile Text" type="Label" parent="."]
+margin_top = 80.0
+margin_right = 1024.0
+margin_bottom = 187.0
+theme = ExtResource( 6 )
+text = "Stranger Block"
+align = 1
+
+[connection signal="pressed" from="Menu/Start Button" to="." method="On_Start_Button_Pressed"]
+[connection signal="pressed" from="Menu/Option Button" to="." method="On_Option_Button_Pressed"]
+[connection signal="pressed" from="Menu/Exit Button" to="." method="On_Exit_Button_Pressed"]
+[connection signal="pressed" from="Option Menu/Start Button" to="." method="On_Start_Button_Pressed"]
+[connection signal="pressed" from="Option Menu/Option Button" to="." method="On_Option_Button_Pressed"]
+[connection signal="pressed" from="Option Menu/Exit Button" to="." method="On_Exit_Button_Pressed"]
