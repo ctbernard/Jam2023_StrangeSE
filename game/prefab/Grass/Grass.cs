@@ -32,7 +32,7 @@ public class Grass : KinematicBody2D
         }
         else {
           if (GrowthDirection == "Up") {
-            return CreateGrowth(new Vector2(16, -48), GrowGroup);
+            return CreateGrowth(new Vector2(16, -16), GrowGroup);
           }
           else if (GrowthDirection == "Left") {
             return CreateGrowth(new Vector2(-48, 16), GrowGroup);

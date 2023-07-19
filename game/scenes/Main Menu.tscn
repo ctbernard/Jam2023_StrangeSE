@@ -69,11 +69,11 @@ margin_bottom = 587.0
 grow_vertical = 0
 alignment = 1
 
-[node name="WASD" type="Label" parent="How To Play"]
+[node name="Arrow" type="Label" parent="How To Play"]
 margin_right = 166.0
 margin_bottom = 26.0
 theme = ExtResource( 6 )
-text = "WASD - Move"
+text = "Arrow - Move"
 
 [node name="Enter" type="Label" parent="How To Play"]
 margin_right = 166.0
