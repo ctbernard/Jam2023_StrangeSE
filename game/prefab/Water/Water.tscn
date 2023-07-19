@@ -15,7 +15,7 @@ region = Rect2( 96, 0, 32, 32 )
 [sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 15, 15 )
 
-[node name="Water" type="KinematicBody2D"]
+[node name="Water" type="KinematicBody2D" groups=["Entity"]]
 script = ExtResource( 1 )
 WaterDirection = "Down"
 WaterLeft = ExtResource( 2 )

@@ -1,7 +1,6 @@
-[gd_resource type="Theme" load_steps=11 format=2]
+[gd_resource type="Theme" load_steps=10 format=2]
 
 [ext_resource path="res://game/assets/font/KarenFat.ttf" type="DynamicFontData" id=1]
-[ext_resource path="res://game/assets/font/AtariGames.ttf" type="DynamicFontData" id=2]
 
 [sub_resource type="DynamicFont" id=1]
 
@@ -25,8 +24,8 @@ bg_color = Color( 1, 1, 1, 0 )
 bg_color = Color( 1, 1, 1, 0 )
 
 [sub_resource type="DynamicFont" id=8]
-size = 40
-font_data = ExtResource( 2 )
+size = 25
+font_data = ExtResource( 1 )
 
 [resource]
 /fonts/Atari = SubResource( 1 )

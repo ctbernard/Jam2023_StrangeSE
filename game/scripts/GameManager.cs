@@ -250,6 +250,7 @@ public class GameManager : Node2D {
       {
         if (node2D.Position == new Vector2(vector2.x * 32, vector2.y * 32) || node2D.GlobalTransform.origin == new Vector2(vector2.x * 32, vector2.y * 32))
         {
+          GD.Print(node.Name);
           return node.Name;
         }
       }
