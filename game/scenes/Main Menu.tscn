@@ -11,7 +11,13 @@
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource( 1 )
-FirstFocus = NodePath("Menu/Start Button")
+FirstFocus = NodePath("Menu/Play")
+MenuPath = NodePath("Menu")
+HowToPlay = NodePath("How To Play")
+HTPExitButton = NodePath("How To Play/HTP Exit Button")
+LevelContainer = NodePath("Level Container")
+LevelOne = NodePath("Level Container/HBoxContainer/Level 1")
+Play = NodePath("Menu/Play")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 margin_right = 1024.0
@@ -25,20 +31,19 @@ margin_right = 200.0
 margin_bottom = 587.0
 grow_vertical = 0
 
-[node name="Start Button" type="Button" parent="Menu"]
+[node name="Play" type="Button" parent="Menu"]
 margin_right = 166.0
 margin_bottom = 26.0
 focus_neighbour_bottom = NodePath("../Option Button")
 theme = ExtResource( 6 )
-toggle_mode = true
-text = "Start Game"
+text = "Play"
 align = 0
 
 [node name="Option Button" type="Button" parent="Menu"]
 margin_top = 34.0
 margin_right = 166.0
 margin_bottom = 60.0
-focus_neighbour_top = NodePath("../Start Button")
+focus_neighbour_top = NodePath("../Play")
 focus_neighbour_bottom = NodePath("../Exit Button")
 theme = ExtResource( 6 )
 text = "How To Play"
@@ -75,12 +80,26 @@ margin_bottom = 60.0
 theme = ExtResource( 6 )
 text = "Z - Select"
 
-[node name="Exit Button" type="Button" parent="How To Play"]
+[node name="R" type="Label" parent="How To Play"]
 margin_top = 68.0
 margin_right = 166.0
 margin_bottom = 94.0
 theme = ExtResource( 6 )
-text = "Exit"
+text = "R - Restart"
+
+[node name="ESC" type="Label" parent="How To Play"]
+margin_top = 102.0
+margin_right = 166.0
+margin_bottom = 128.0
+theme = ExtResource( 6 )
+text = "ESC - Menu"
+
+[node name="HTP Exit Button" type="Button" parent="How To Play"]
+margin_top = 136.0
+margin_right = 166.0
+margin_bottom = 162.0
+theme = ExtResource( 6 )
+text = "Back"
 align = 0
 
 [node name="Sound Queue" type="Node" parent="."]
@@ -97,10 +116,144 @@ margin_top = 80.0
 margin_right = 1024.0
 margin_bottom = 187.0
 theme = ExtResource( 5 )
-text = "Stranger Block"
+text = "Unintended Block Effect"
 align = 1
 
-[connection signal="pressed" from="Menu/Start Button" to="." method="On_Start_Button_Pressed"]
+[node name="Level Selection" type="GridContainer" parent="."]
+margin_left = 349.0
+margin_top = 294.0
+margin_right = 642.0
+margin_bottom = 407.0
+columns = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Level Selection"]
+
+[node name="Level Container" type="VBoxContainer" parent="."]
+visible = false
+margin_left = 267.0
+margin_top = 266.0
+margin_right = 751.0
+margin_bottom = 400.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Level Container"]
+margin_right = 484.0
+margin_bottom = 26.0
+alignment = 1
+
+[node name="Level 1" type="Button" parent="Level Container/HBoxContainer"]
+margin_left = 78.0
+margin_right = 164.0
+margin_bottom = 26.0
+focus_neighbour_right = NodePath("../Level 2")
+focus_neighbour_bottom = NodePath("../../HBoxContainer2/Level 4")
+theme = ExtResource( 6 )
+text = "Level 1"
+
+[node name="Space" type="Button" parent="Level Container/HBoxContainer"]
+margin_left = 172.0
+margin_right = 188.0
+margin_bottom = 26.0
+theme = ExtResource( 6 )
+text = "  "
+
+[node name="Level 2" type="Button" parent="Level Container/HBoxContainer"]
+margin_left = 196.0
+margin_right = 284.0
+margin_bottom = 26.0
+focus_neighbour_left = NodePath("../Level 1")
+focus_neighbour_right = NodePath("../Level 3")
+focus_neighbour_bottom = NodePath("../../HBoxContainer2/Level 5")
+theme = ExtResource( 6 )
+text = "Level 2"
+
+[node name="Space2" type="Button" parent="Level Container/HBoxContainer"]
+margin_left = 292.0
+margin_right = 308.0
+margin_bottom = 26.0
+theme = ExtResource( 6 )
+text = "  "
+
+[node name="Level 3" type="Button" parent="Level Container/HBoxContainer"]
+margin_left = 316.0
+margin_right = 405.0
+margin_bottom = 26.0
+focus_neighbour_left = NodePath("../Level 2")
+focus_neighbour_bottom = NodePath("../../HBoxContainer2/Level 6")
+theme = ExtResource( 6 )
+text = "Level 3"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Level Container"]
+margin_top = 34.0
+margin_right = 484.0
+margin_bottom = 60.0
+alignment = 1
+
+[node name="Level 4" type="Button" parent="Level Container/HBoxContainer2"]
+margin_left = 77.0
+margin_right = 166.0
+margin_bottom = 26.0
+focus_neighbour_top = NodePath("../../HBoxContainer/Level 1")
+focus_neighbour_right = NodePath("../Level 5")
+focus_neighbour_bottom = NodePath("../../HBoxContainer3/Level Back")
+theme = ExtResource( 6 )
+text = "Level 4"
+
+[node name="Space" type="Button" parent="Level Container/HBoxContainer2"]
+margin_left = 174.0
+margin_right = 190.0
+margin_bottom = 26.0
+theme = ExtResource( 6 )
+text = "  "
+
+[node name="Level 5" type="Button" parent="Level Container/HBoxContainer2"]
+margin_left = 198.0
+margin_right = 286.0
+margin_bottom = 26.0
+focus_neighbour_left = NodePath("../Level 4")
+focus_neighbour_top = NodePath("../../HBoxContainer/Level 2")
+focus_neighbour_right = NodePath("../Level 6")
+focus_neighbour_bottom = NodePath("../../HBoxContainer3/Level Back")
+theme = ExtResource( 6 )
+text = "Level 5"
+
+[node name="Space2" type="Button" parent="Level Container/HBoxContainer2"]
+margin_left = 294.0
+margin_right = 310.0
+margin_bottom = 26.0
+theme = ExtResource( 6 )
+text = "  "
+
+[node name="Level 6" type="Button" parent="Level Container/HBoxContainer2"]
+margin_left = 318.0
+margin_right = 406.0
+margin_bottom = 26.0
+focus_neighbour_left = NodePath("../Level 5")
+focus_neighbour_top = NodePath("../../HBoxContainer/Level 3")
+focus_neighbour_bottom = NodePath("../../HBoxContainer3/Level Back")
+theme = ExtResource( 6 )
+text = "Level 6"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Level Container"]
+margin_top = 68.0
+margin_right = 484.0
+margin_bottom = 94.0
+alignment = 1
+
+[node name="Level Back" type="Button" parent="Level Container/HBoxContainer3"]
+margin_left = 214.0
+margin_right = 270.0
+margin_bottom = 26.0
+theme = ExtResource( 6 )
+text = "Back"
+
+[connection signal="pressed" from="Menu/Play" to="." method="On_Start_Button_Pressed"]
 [connection signal="pressed" from="Menu/Option Button" to="." method="On_Option_Button_Pressed"]
 [connection signal="pressed" from="Menu/Exit Button" to="." method="On_Exit_Button_Pressed"]
-[connection signal="pressed" from="How To Play/Exit Button" to="." method="On_Exit_Button_Pressed"]
+[connection signal="pressed" from="How To Play/HTP Exit Button" to="." method="On_HTP_Exit_Button_pressed"]
+[connection signal="pressed" from="Level Container/HBoxContainer/Level 1" to="." method="LoadLevel" binds= [ "Level1" ]]
+[connection signal="pressed" from="Level Container/HBoxContainer/Level 2" to="." method="LoadLevel" binds= [ "Level2" ]]
+[connection signal="pressed" from="Level Container/HBoxContainer/Level 3" to="." method="LoadLevel" binds= [ "Level3" ]]
+[connection signal="pressed" from="Level Container/HBoxContainer2/Level 4" to="." method="LoadLevel" binds= [ "Level4" ]]
+[connection signal="pressed" from="Level Container/HBoxContainer2/Level 5" to="." method="LoadLevel" binds= [ "Level5" ]]
+[connection signal="pressed" from="Level Container/HBoxContainer2/Level 6" to="." method="LoadLevel" binds= [ "Level6" ]]
+[connection signal="pressed" from="Level Container/HBoxContainer3/Level Back" to="." method="On_Level_Back_pressed"]

@@ -9,6 +9,7 @@ public class GameManager : Node2D {
   [Export] public PackedScene WoodPreload;
   [Export] public PackedScene WaterPreload;
   [Export] public PackedScene GrassPreload;
+  [Export] public NodePath MainMenuPreload;
   [Export] public NodePath WaterTimer;
 
   public SelectionMode Mode = SelectionMode.Player;
@@ -104,7 +105,12 @@ public class GameManager : Node2D {
         else if (KeyPressed == "X" && Mode == SelectionMode.Selector) {
           ActionSetObjectNode();
         }
-
+        else if (KeyPressed == "R") {
+          GetTree().ReloadCurrentScene();
+        }
+        else if (KeyPressed == "Escape") {
+          GetTree().ChangeScene("res://game/scenes/Main Menu.tscn");
+        }
       }
     }
   }
@@ -178,6 +184,7 @@ public class GameManager : Node2D {
   public bool CanMove(Vector2 vector2, SelectionMode mode) {
     string tileName = GetTileName(vector2);
     string entityName = GetEntityName(vector2);
+
     switch (Mode) {
       case SelectionMode.Player:
         if (tileName == "Empty" && entityName == "Nothing")
@@ -232,7 +239,7 @@ public class GameManager : Node2D {
   }
 
   public void Win() {
-    GD.Print("You Win");
+    GetTree().ChangeScene("res://game/scenes/Main Menu.tscn");
   }
 
   public string GetTileName(Vector2 vector2) {
@@ -269,7 +276,6 @@ public class GameManager : Node2D {
         {
 
           if (node2D.GetParent().GetParent() is Water waterScript) {
-            GD.Print("test");
             foreach (Node2D growthNode in waterScript.GrowthGrass) {
               if (growthNode != null && growthNode.GetChildCount() > 0) {
                 for (int i = 0; i < growthNode.GetChildCount(); i++)
