@@ -1,15 +1,17 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://game/scenes/Menu.cs" type="Script" id=1]
-[ext_resource path="res://game/scenes/SoundQueue.cs" type="Script" id=2]
-[ext_resource path="res://game/scenes/SoundManager.cs" type="Script" id=3]
-[ext_resource path="res://game/assets/music/Titlescreen.mp3" type="AudioStream" id=4]
 [ext_resource path="res://game/assets/theme/default_theme2.tres" type="Theme" id=5]
 [ext_resource path="res://game/assets/theme/default_theme.tres" type="Theme" id=6]
 
 [node name="Main Menu" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+margin_left = 204.0
+margin_top = 119.0
+margin_right = 204.0
+margin_bottom = 119.0
+rect_scale = Vector2( 0.600001, 0.600001 )
 script = ExtResource( 1 )
 FirstFocus = NodePath("Menu/Play")
 MenuPath = NodePath("Menu")
@@ -73,6 +75,12 @@ margin_bottom = 26.0
 theme = ExtResource( 6 )
 text = "WASD - Move"
 
+[node name="Enter" type="Label" parent="How To Play"]
+margin_right = 166.0
+margin_bottom = 26.0
+theme = ExtResource( 6 )
+text = "Enter - Press Button"
+
 [node name="Z" type="Label" parent="How To Play"]
 margin_top = 34.0
 margin_right = 166.0
@@ -101,15 +109,6 @@ margin_bottom = 162.0
 theme = ExtResource( 6 )
 text = "Back"
 align = 0
-
-[node name="Sound Queue" type="Node" parent="."]
-script = ExtResource( 2 )
-
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Sound Queue"]
-stream = ExtResource( 4 )
-
-[node name="Sound Manager" type="Node" parent="."]
-script = ExtResource( 3 )
 
 [node name="Tile Text" type="Label" parent="."]
 margin_top = 80.0
@@ -245,6 +244,10 @@ margin_right = 270.0
 margin_bottom = 26.0
 theme = ExtResource( 6 )
 text = "Back"
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2( 511, 301 )
+current = true
 
 [connection signal="pressed" from="Menu/Play" to="." method="On_Start_Button_Pressed"]
 [connection signal="pressed" from="Menu/Option Button" to="." method="On_Option_Button_Pressed"]

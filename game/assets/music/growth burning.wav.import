@@ -1,0 +1,23 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/growth burning.wav-5f883f2c4e3d8ce16b33a2f8ebbec44a.sample"
+
+[deps]
+
+source_file="res://game/assets/music/growth burning.wav"
+dest_files=[ "res://.import/growth burning.wav-5f883f2c4e3d8ce16b33a2f8ebbec44a.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0
