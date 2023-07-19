@@ -1,0 +1,29 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://game/assets/sprites/tiles/tileset.png" type="Texture" id=1]
+[ext_resource path="res://game/prefab/Grass/Grass.cs" type="Script" id=2]
+[ext_resource path="res://game/prefab/Grass/Grass Growth.tscn" type="PackedScene" id=3]
+
+[sub_resource type="AtlasTexture" id=1]
+flags = 4
+atlas = ExtResource( 1 )
+region = Rect2( 32, 0, 32, 32 )
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 15, 15 )
+
+[node name="Grass" type="KinematicBody2D" groups=["Entity"]]
+script = ExtResource( 2 )
+GrassGrowth = ExtResource( 3 )
+Before = NodePath("")
+After = NodePath("")
+
+[node name="Sprite" type="Sprite" parent="."]
+position = Vector2( 16, 16 )
+texture = SubResource( 1 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 16, 16 )
+shape = SubResource( 2 )
+
+[node name="Grow" type="Node2D" parent="."]

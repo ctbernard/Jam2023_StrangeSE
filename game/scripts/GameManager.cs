@@ -7,6 +7,9 @@ public class GameManager : Node2D {
   [Export] public NodePath EntityMapNode;
   [Export] public PackedScene PlayerPreload;
   [Export] public PackedScene WoodPreload;
+  [Export] public PackedScene WaterPreload;
+  [Export] public PackedScene GrassPreload;
+  [Export] public NodePath WaterTimer;
 
   public SelectionMode Mode = SelectionMode.Player;
   public Node2D SelectedEntity;
@@ -28,6 +31,7 @@ public class GameManager : Node2D {
     PlayerNode = GetNode<Node2D>(this.PlayerNodePath);
     SelectionRangeNode = PlayerNode.GetNode<Node2D>("SelectionRange");
     SelectorNode = PlayerNode.GetNode<Node2D>("Selector");
+    GetNode<Timer>(WaterTimer).Start();
   }
 
   public void CreateEntityMap(TileMap tileMap) {
@@ -53,6 +57,30 @@ public class GameManager : Node2D {
           Node2D woodPreload = WoodPreload.Instance() as Node2D;
           woodPreload.Position = new Vector2(x * 32, y * 32);
           AddChild(woodPreload);
+        }
+        if (TileName.Contains("Water")) {
+          Node2D waterPreload = WaterPreload.Instance() as Node2D;
+          waterPreload.Position = new Vector2(x * 32, y * 32);
+          AddChild(waterPreload);
+
+          string[] substrings = TileName.Split('_');
+          string lastSubstring = substrings[substrings.Length - 1];
+          if (waterPreload is Water waterScript) {
+            waterScript.TileMapReference = tileMapFloor;
+            waterScript.WaterDirection = lastSubstring;
+            waterScript.WaterTimer = GetNode<Timer>(WaterTimer);
+            waterScript.SetTimer();
+
+          }
+        }
+        if (TileName.Contains("Grass")) {
+          Node2D grassPreload = GrassPreload.Instance() as Node2D;
+          grassPreload.Position = new Vector2(x * 32, y * 32);
+          AddChild(grassPreload);
+
+          if (grassPreload is Grass grassScript) {
+            grassScript.TileMapReference = tileMapFloor;
+          }
         }
       }
     }
@@ -101,7 +129,8 @@ public class GameManager : Node2D {
     if (CanMove(coordinate,Mode)) {
       SelectedEntity.Position = new Vector2(coordinate.x * 32, coordinate.y * 32);
 
-      if (Mode == SelectionMode.Object) {
+      if (Mode == SelectionMode.Object && IsObjectOutOfRange(coordinate)) {
+        GD.Print("out of range");
         ActionChangeMode(SelectionMode.Object);
       }
     }
@@ -134,7 +163,6 @@ public class GameManager : Node2D {
 
   public void ActionSetObjectNode() {
     NodePath hoverObjectPath = GetNode<Selector>(this.SelectorNode.GetPath()).HoverObject;
-    GD.Print(hoverObjectPath);
     if(hoverObjectPath != null && !hoverObjectPath.ToString().Contains("Player")) {
       this.ObjectNode = GetNode<Node2D>(hoverObjectPath);
       Mode = SelectionMode.Object;
@@ -150,8 +178,6 @@ public class GameManager : Node2D {
   public bool CanMove(Vector2 vector2, SelectionMode mode) {
     string tileName = GetTileName(vector2);
     string entityName = GetEntityName(vector2);
-    GD.Print(tileName);
-    GD.Print(entityName, mode);
     switch (Mode) {
       case SelectionMode.Player:
         if (tileName == "Empty" && entityName == "Nothing")
@@ -168,10 +194,18 @@ public class GameManager : Node2D {
         Node2D downNode = SelectionRangeNode.GetNode<Node2D>("Down");
         Node2D leftNode = SelectionRangeNode.GetNode<Node2D>("Left");
         Node2D rightNode = SelectionRangeNode.GetNode<Node2D>("Right");
+        Node2D upLeftNode = SelectionRangeNode.GetNode<Node2D>("UpLeft");
+        Node2D upRightNode = SelectionRangeNode.GetNode<Node2D>("UpRight");
+        Node2D downLeftNode = SelectionRangeNode.GetNode<Node2D>("DownLeft");
+        Node2D downRightNode = SelectionRangeNode.GetNode<Node2D>("DownRight");
         if ((vector2 == new Vector2(0, -1) && upNode.IsVisibleInTree()) ||
             (vector2 == new Vector2(0, 1) && downNode.IsVisibleInTree()) ||
             (vector2 == new Vector2(-1, 0) && leftNode.IsVisibleInTree()) ||
             (vector2 == new Vector2(1, 0) && rightNode.IsVisibleInTree()) ||
+            (vector2 == new Vector2(-1, -1) && upLeftNode.IsVisibleInTree()) ||
+            (vector2 == new Vector2(1, -1) && upRightNode.IsVisibleInTree()) ||
+            (vector2 == new Vector2(-1, 1) && downLeftNode.IsVisibleInTree()) ||
+            (vector2 == new Vector2(1, 1) && downRightNode.IsVisibleInTree()) ||
             (vector2 == new Vector2(0, 0))) {
           return true;
         }
@@ -179,9 +213,16 @@ public class GameManager : Node2D {
           return false;
         break;
       case SelectionMode.Object:
-        if (tileName == "Empty" && new Vector2(vector2.x * 32, vector2.y * 32) != PlayerNode.Position)
+        if (tileName == "Empty" && new Vector2(vector2.x * 32, vector2.y * 32) != PlayerNode.Position && entityName == "Nothing")
           return true;
-          else
+        else if (entityName.Contains("Water") && entityName.Contains("Down") ||
+                 entityName.Contains("Water") && entityName.Contains("Left") ||
+                 entityName.Contains("Water") && entityName.Contains("Right")||
+                 entityName.Contains("Water") && entityName.Contains("Up")) {
+          RemoveGrowth(vector2);
+          return true;
+        }
+        else
           return false;
         break;
       default:
@@ -207,9 +248,48 @@ public class GameManager : Node2D {
     {
       if (node is Node2D node2D)
       {
-        if (node2D.Position == new Vector2(vector2.x * 32, vector2.y * 32))
+        if (node2D.Position == new Vector2(vector2.x * 32, vector2.y * 32) || node2D.GlobalTransform.origin == new Vector2(vector2.x * 32, vector2.y * 32))
         {
           return node.Name;
+        }
+      }
+    }
+    return "Nothing";
+  }
+
+  public string RemoveGrowth(Vector2 vector2) {
+    var checkObjects = GetTree().GetNodesInGroup("Entity");
+
+    foreach (Node node in checkObjects)
+    {
+      if (node is Node2D node2D)
+      {
+        if (node2D.GlobalTransform.origin == new Vector2(vector2.x * 32, vector2.y * 32))
+        {
+
+          if (node2D.GetParent().GetParent() is Water waterScript) {
+            GD.Print("test");
+            foreach (Node2D growthNode in waterScript.GrowthGrass) {
+              if (growthNode != null && growthNode.GetChildCount() > 0) {
+                for (int i = 0; i < growthNode.GetChildCount(); i++)
+                {
+                  Node child2 = growthNode.GetChild(i);
+                  child2.Free();
+                }
+              }
+            }
+            waterScript.GrowthGrass.Clear();
+          }
+          int numChildren = node2D.GetParent().GetChildCount();
+          int startPosition = node2D.GetIndex();
+
+          for (int i = numChildren - 1; i >= startPosition; i--)
+          {
+            Node child = node2D.GetParent().GetChild(i);
+            child.Free();
+          }
+
+
         }
       }
     }
@@ -246,16 +326,63 @@ public class GameManager : Node2D {
     Node2D downNode = SelectionRangeNode.GetNode<Node2D>("Down");
     Node2D leftNode = SelectionRangeNode.GetNode<Node2D>("Left");
     Node2D rightNode = SelectionRangeNode.GetNode<Node2D>("Right");
+    Node2D upLeftNode = SelectionRangeNode.GetNode<Node2D>("UpLeft");
+    Node2D upRightNode = SelectionRangeNode.GetNode<Node2D>("UpRight");
+    Node2D downLeftNode = SelectionRangeNode.GetNode<Node2D>("DownLeft");
+    Node2D downRightNode = SelectionRangeNode.GetNode<Node2D>("DownRight");
 
     Vector2 upVector = new Vector2((PlayerNode.Position.x / 32),(PlayerNode.Position.y / 32) - 1 );
     Vector2 downVector = new Vector2((PlayerNode.Position.x / 32),(PlayerNode.Position.y / 32) + 1 );
     Vector2 leftVector = new Vector2((PlayerNode.Position.x / 32) - 1,(PlayerNode.Position.y / 32));
     Vector2 rightVector = new Vector2((PlayerNode.Position.x / 32) + 1,(PlayerNode.Position.y / 32));
+    Vector2 upLeftVector = new Vector2((PlayerNode.Position.x / 32) - 1,(PlayerNode.Position.y / 32) - 1 );
+    Vector2 upRightVector = new Vector2((PlayerNode.Position.x / 32) + 1,(PlayerNode.Position.y / 32) - 1 );
+    Vector2 downLeftVector = new Vector2((PlayerNode.Position.x / 32) - 1,(PlayerNode.Position.y / 32) + 1);
+    Vector2 downRightVector = new Vector2((PlayerNode.Position.x / 32) + 1,(PlayerNode.Position.y / 32) + 1);
 
     upNode.Visible = GetTileName(upVector) == "Wood" || GetTileName(upVector) == "Empty";
     downNode.Visible = GetTileName(downVector) == "Wood" || GetTileName(downVector) == "Empty";
     leftNode.Visible = GetTileName(leftVector) == "Wood" || GetTileName(leftVector) == "Empty";
     rightNode.Visible = GetTileName(rightVector) == "Wood" || GetTileName(rightVector) == "Empty";
+    upLeftNode.Visible = GetTileName(upLeftVector) == "Wood" || GetTileName(upLeftVector) == "Empty";
+    upRightNode.Visible = GetTileName(upRightVector) == "Wood" || GetTileName(upRightVector) == "Empty";
+    downLeftNode.Visible = GetTileName(downLeftVector) == "Wood" || GetTileName(downLeftVector) == "Empty";
+    downRightNode.Visible = GetTileName(downRightVector) == "Wood" || GetTileName(downRightVector) == "Empty";
+  }
+
+  public bool IsObjectOutOfRange(Vector2 vector2) {
+    Node2D upNode = SelectionRangeNode.GetNode<Node2D>("Up");
+    Node2D downNode = SelectionRangeNode.GetNode<Node2D>("Down");
+    Node2D leftNode = SelectionRangeNode.GetNode<Node2D>("Left");
+    Node2D rightNode = SelectionRangeNode.GetNode<Node2D>("Right");
+    Node2D upLeftNode = SelectionRangeNode.GetNode<Node2D>("UpLeft");
+    Node2D upRightNode = SelectionRangeNode.GetNode<Node2D>("UpRight");
+    Node2D downLeftNode = SelectionRangeNode.GetNode<Node2D>("DownLeft");
+    Node2D downRightNode = SelectionRangeNode.GetNode<Node2D>("DownRight");
+
+    Vector2 upVector = new Vector2((PlayerNode.Position.x / 32),(PlayerNode.Position.y / 32) - 1 );
+    Vector2 downVector = new Vector2((PlayerNode.Position.x / 32),(PlayerNode.Position.y / 32) + 1 );
+    Vector2 leftVector = new Vector2((PlayerNode.Position.x / 32) - 1,(PlayerNode.Position.y / 32));
+    Vector2 rightVector = new Vector2((PlayerNode.Position.x / 32) + 1,(PlayerNode.Position.y / 32));
+    Vector2 upLeftVector = new Vector2((PlayerNode.Position.x / 32) - 1,(PlayerNode.Position.y / 32) - 1 );
+    Vector2 upRightVector = new Vector2((PlayerNode.Position.x / 32) + 1,(PlayerNode.Position.y / 32) - 1 );
+    Vector2 downLeftVector = new Vector2((PlayerNode.Position.x / 32) - 1,(PlayerNode.Position.y / 32) + 1);
+    Vector2 downRightVector = new Vector2((PlayerNode.Position.x / 32) + 1,(PlayerNode.Position.y / 32) + 1);
+
+    if (vector2 == upVector ||
+        vector2 == downVector ||
+        vector2 == leftVector ||
+        vector2 == rightVector ||
+        vector2 == upLeftVector ||
+        vector2 == upRightVector ||
+        vector2 == downLeftVector ||
+        vector2 == downRightVector) {
+      return false;
+    }
+    else {
+      return true;
+    }
+
   }
 }
 

@@ -43,6 +43,22 @@ texture = ExtResource( 3 )
 position = Vector2( 48, 16 )
 texture = ExtResource( 3 )
 
+[node name="UpLeft" type="Sprite" parent="SelectionRange"]
+position = Vector2( -16, -16 )
+texture = ExtResource( 3 )
+
+[node name="UpRight" type="Sprite" parent="SelectionRange"]
+position = Vector2( 48, -16 )
+texture = ExtResource( 3 )
+
+[node name="DownLeft" type="Sprite" parent="SelectionRange"]
+position = Vector2( -16, 48 )
+texture = ExtResource( 3 )
+
+[node name="DownRight" type="Sprite" parent="SelectionRange"]
+position = Vector2( 48, 48 )
+texture = ExtResource( 3 )
+
 [node name="Selector" type="Area2D" parent="."]
 visible = false
 script = ExtResource( 4 )

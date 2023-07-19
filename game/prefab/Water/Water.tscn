@@ -1,0 +1,42 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://game/prefab/Water/Water.cs" type="Script" id=1]
+[ext_resource path="res://game/prefab/Water/Water Left.tscn" type="PackedScene" id=2]
+[ext_resource path="res://game/prefab/Water/Water Up.tscn" type="PackedScene" id=3]
+[ext_resource path="res://game/prefab/Water/Water Down.tscn" type="PackedScene" id=4]
+[ext_resource path="res://game/prefab/Water/Water Right.tscn" type="PackedScene" id=5]
+[ext_resource path="res://game/assets/sprites/tiles/tileset.png" type="Texture" id=6]
+
+[sub_resource type="AtlasTexture" id=3]
+flags = 4
+atlas = ExtResource( 6 )
+region = Rect2( 96, 0, 32, 32 )
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 15, 15 )
+
+[node name="Water" type="KinematicBody2D"]
+script = ExtResource( 1 )
+WaterDirection = "Down"
+WaterLeft = ExtResource( 2 )
+WaterUp = ExtResource( 3 )
+WaterDown = ExtResource( 4 )
+WaterRight = ExtResource( 5 )
+
+[node name="Sprite" type="Sprite" parent="."]
+position = Vector2( 16, 16 )
+texture = SubResource( 3 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 16, 16 )
+shape = SubResource( 2 )
+
+[node name="Grow Left" type="Node2D" parent="."]
+
+[node name="Grow Up" type="Node2D" parent="."]
+
+[node name="Grow Right" type="Node2D" parent="."]
+
+[node name="Grow Down" type="Node2D" parent="."]
+
+[node name="Node2D" type="Node2D" parent="."]
