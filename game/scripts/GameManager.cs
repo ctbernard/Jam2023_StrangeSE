@@ -150,11 +150,16 @@ public class GameManager : Node2D {
   public bool CanMove(Vector2 vector2, SelectionMode mode) {
     string tileName = GetTileName(vector2);
     string entityName = GetEntityName(vector2);
+    GD.Print(tileName);
     GD.Print(entityName, mode);
     switch (Mode) {
       case SelectionMode.Player:
-        if (tileName == "Floor" && entityName == "Nothing")
+        if (tileName == "Empty" && entityName == "Nothing")
           return true;
+        else if (tileName == "Exit") {
+          Win();
+          return true;
+        }
         else
           return false;
         break;
@@ -174,7 +179,7 @@ public class GameManager : Node2D {
           return false;
         break;
       case SelectionMode.Object:
-        if (tileName == "Floor" && new Vector2(vector2.x * 32, vector2.y * 32) != PlayerNode.Position)
+        if (tileName == "Empty" && new Vector2(vector2.x * 32, vector2.y * 32) != PlayerNode.Position)
           return true;
           else
           return false;
@@ -183,6 +188,10 @@ public class GameManager : Node2D {
         return false;
         break;
     }
+  }
+
+  public void Win() {
+    GD.Print("You Win");
   }
 
   public string GetTileName(Vector2 vector2) {
@@ -243,10 +252,10 @@ public class GameManager : Node2D {
     Vector2 leftVector = new Vector2((PlayerNode.Position.x / 32) - 1,(PlayerNode.Position.y / 32));
     Vector2 rightVector = new Vector2((PlayerNode.Position.x / 32) + 1,(PlayerNode.Position.y / 32));
 
-    upNode.Visible = GetTileName(upVector) == "Wood" || GetTileName(upVector) == "Floor";
-    downNode.Visible = GetTileName(downVector) == "Wood" || GetTileName(downVector) == "Floor";
-    leftNode.Visible = GetTileName(leftVector) == "Wood" || GetTileName(leftVector) == "Floor";
-    rightNode.Visible = GetTileName(rightVector) == "Wood" || GetTileName(rightVector) == "Floor";
+    upNode.Visible = GetTileName(upVector) == "Wood" || GetTileName(upVector) == "Empty";
+    downNode.Visible = GetTileName(downVector) == "Wood" || GetTileName(downVector) == "Empty";
+    leftNode.Visible = GetTileName(leftVector) == "Wood" || GetTileName(leftVector) == "Empty";
+    rightNode.Visible = GetTileName(rightVector) == "Wood" || GetTileName(rightVector) == "Empty";
   }
 }
 

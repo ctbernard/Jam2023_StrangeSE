@@ -11,12 +11,16 @@ config_version=4
 [application]
 
 config/name="Jam2023"
-run/main_scene="res://Main.tscn"
+run/main_scene="res://game/scenes/Level1.tscn"
 config/icon="res://game/assets/sprites/icon.png"
 
 [editor_plugins]
 
 enabled=PoolStringArray(  )
+
+[global]
+
+color=false
 
 [gui]
 
@@ -42,6 +46,7 @@ common/enable_pause_aware_picking=true
 [rendering]
 
 quality/driver/driver_name="GLES2"
+environment/default_clear_color=Color( 0.0627451, 0.0627451, 0.0980392, 1 )
 environment/default_environment="res://default_env.tres"
 
 [tiled_importer]

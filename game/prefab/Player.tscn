@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=2]
 
-[ext_resource path="res://game/assets/sprites/tiles/player_temp.png" type="Texture" id=1]
+[ext_resource path="res://game/assets/sprites/tiles/tileset.png" type="Texture" id=1]
 [ext_resource path="res://game/assets/sprites/Selector.png" type="Texture" id=2]
 [ext_resource path="res://game/assets/sprites/SelectorRange.png" type="Texture" id=3]
 [ext_resource path="res://game/scripts/Selector.cs" type="Script" id=4]
@@ -15,7 +15,10 @@ extents = Vector2( 15, 15 )
 
 [node name="Sprite" type="Sprite" parent="."]
 position = Vector2( 16, 16 )
+scale = Vector2( 0.875, 0.875 )
 texture = ExtResource( 1 )
+region_enabled = true
+region_rect = Rect2( 32, 32, 32, 32 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2( 16, 16 )
